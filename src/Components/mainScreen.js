@@ -18,8 +18,9 @@ class MainScreen extends Component {
     return (
       <View style={styles.container}>
         <TouchableHighlight
+          style = {styles.coffeeButton}
           underlayColor="grey"
-          onClick={this.onCoffeeClick}>
+          onPress={this.onCoffeeClick}>
           <Image
             source={require('../../images/coffeeButton.png')}
           />
@@ -50,6 +51,10 @@ const styles = StyleSheet.create({
     color: '#333333',
     marginBottom: 5,
   },
+  coffeeButton: {
+    borderRadius: 400
+    // borderWidth: 2
+  }
 });
 
 export default MainScreen;

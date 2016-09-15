@@ -7,6 +7,7 @@ import {
   View
 } from 'react-native';
 import MainScreen from './mainScreen';
+import Leaderboard from './leaderboard';
 
 class TabBarExample extends React.Component {
   static title = '<TabBarIOS>';
@@ -70,7 +71,8 @@ class TabBarExample extends React.Component {
               presses: this.state.presses + 1
             });
           }}>
-          {this._renderContent('#21551C', 'Green Tab', this.state.presses)}
+          {/* {this._renderContent('#21551C', 'Green Tab', this.state.presses)} */}
+          <Leaderboard />
         </TabBarIOS.Item>
       </TabBarIOS>
     );
