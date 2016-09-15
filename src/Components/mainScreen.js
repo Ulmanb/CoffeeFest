@@ -33,10 +33,9 @@ class MainScreen extends Component {
   componentWillMount() {
 // ...
 
-debugger;
 // Attempt a login using the Facebook login dialog,
 // asking for default permissions.
-LoginManager.logInWithReadPermissions(['public_profile']).then(
+LoginManager.logInWithReadPermissions(['public_profile', 'user_friends']).then(
   function(result) {
     if (result.isCancelled) {
       alert('Login was cancelled');
@@ -54,9 +53,13 @@ LoginManager.logInWithReadPermissions(['public_profile']).then(
     return (
       <View style={styles.container}>
         <View style={styles.drawerContainer}>
+        <View style={styles.logoContainer}>
+          <Image source={require('../../images/LOGO.png')}
+                 style={styles.logo}/>
+        </View>
           <TouchableHighlight style={styles.toolbar}
             onPress={this.openDrawer}>
-            <Image source={require('../../images/coffeeButton.png')}
+            <Image source={require('../../images/makelist.png')}
                    style={styles.thumbnail}/>
           </TouchableHighlight>
         </View>
@@ -66,7 +69,7 @@ LoginManager.logInWithReadPermissions(['public_profile']).then(
             underlayColor="grey"
             onPress={this.onCoffeeClick}>
             <Image
-              source={require('../../images/coffeeButton.png')}
+              source={require('../../images/aaaa.png')}
             />
           </TouchableHighlight>
           {/* <Icon.Button name="facebook" backgroundColor="#3b5998" onPress={this.loginWithFacebook}>
@@ -127,7 +130,16 @@ const styles = StyleSheet.create({
     // borderWidth: 2
   },
   toolbar: {
-
+    // backgroundImage: ''
+  },
+  logo: {
+    zIndex: -3,
+    flex: 1,
+    // width: 200,
+    // height: 200
+  },
+  logoContainer: {
+    flex: 1,
   },
   thumbnail: {
     width: 64,

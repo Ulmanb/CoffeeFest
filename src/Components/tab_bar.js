@@ -30,19 +30,39 @@ class TabBarExample extends React.Component {
     );
   };
 
+  componentWillMount() {
+    // ...
+
+    // Attempt a login using the Facebook login dialog,
+    // asking for default permissions.
+    LoginManager.logInWithReadPermissions(['public_profile', 'user_friends']).then(
+      function(result) {
+        if (result.isCancelled) {
+          alert('Login was cancelled');
+        } else {
+          alert('Login was successful with permissions: '
+            + result.grantedPermissions.toString());
+        }
+      },
+      function(error) {
+        alert('Login failed with error: ' + error);
+      }
+    );
+  }
+
   render() {
     return (
       <TabBarIOS
         unselectedTintColor="black"
         // tintColor="rgb(177, 237, 241)"
-        tintColor="blue"
+        // tintColor="blue"
         // barTintColor="darkslateblue"
         // barTintColor="rgb(241, 241, 241)"
         barTintColor="white"
         >
         <TabBarIOS.Item
           title="Home"
-          // icon={{uri: base64Icon, scale: 3}}
+          icon={require('../../images/home_icon.png')}
           selected={this.state.selectedTab === 'blueTab'}
           onPress={() => {
             this.setState({
@@ -65,9 +85,9 @@ class TabBarExample extends React.Component {
           {this._renderContent('#783E33', 'Red Tab', this.state.notifCount)}
         </TabBarIOS.Item>
         <TabBarIOS.Item
-          // icon={require('./flux.png')}
+          icon={require('../../images/winnericon.png')}
           // selectedIcon={require('./relay.png')}
-          renderAsOriginal
+          // renderAsOriginal
           title="Leaderboard"
           selected={this.state.selectedTab === 'leaderboard'}
           onPress={() => {
@@ -80,9 +100,9 @@ class TabBarExample extends React.Component {
           <Leaderboard />
         </TabBarIOS.Item>
         <TabBarIOS.Item
-          // icon={require('./flux.png')}
+          icon={require('../../images/checklist2.png')}
           // selectedIcon={require('./relay.png')}
-          renderAsOriginal
+          // renderAsOriginal
           title="Checklist"
           selected={this.state.selectedTab === 'greenTab'}
           onPress={() => {
