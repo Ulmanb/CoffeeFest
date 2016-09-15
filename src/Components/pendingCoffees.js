@@ -8,6 +8,7 @@ import {
   ListView,
   Image
 } from 'react-native';
+// import ItemCheckbox from 'react-native-item-checkbox';
 
 export default class MyComponent extends Component {
   componentWillMount(){
@@ -16,7 +17,7 @@ export default class MyComponent extends Component {
 
   constructor() {
     super();
-    this.leaderboardLine = this.leaderboardLine.bind(this);
+    this.renderLine = this.renderLine.bind(this);
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
       dataSource: ds.cloneWithRows(
@@ -30,20 +31,26 @@ export default class MyComponent extends Component {
       <ListView
         dataSource={this.state.dataSource}
         //  renderRow={(rowData) => <Text>{rowData}</Text>}
-        renderRow={this.leaderboardLine}
+        renderRow={this.renderLine}
         renderSeparator={this._renderSeparator}
       />
     );
   }
 
-  leaderboardLine(rowData){
+  renderLine(rowData){
     return (
       <View style={styles.row}>
         <Image style = {styles.thumb} source={require('../../images/coffeeButton.png')} />
         <View style={styles.textContainer}>
           <Text style={styles.text}>
-            {`${rowData.name} is making ☕️!`}
+            {`${rowData.name} wants ☕️!`}
           </Text>
+          {/* <ItemCheckbox //example with icon settings
+             color="#FF9999"
+             icon="tree"
+             iconSize="normal" //"small", "normal", "large"
+             size={100}
+          /> */}
         </View>
       </View>
     );

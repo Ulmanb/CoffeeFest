@@ -7,6 +7,15 @@ import {
   Image
 } from 'react-native';
 
+// const FBSDK = require('react-native-fbsdk');
+// const {
+// LoginManager,
+// } = FBSDK;
+
+import {LoginManager} from 'react-native-fbsdk';
+
+import Icon from 'react-native-vector-icons/FontAwesome';
+import Login from './facebookLogin';
 
 class MainScreen extends Component {
   constructor(props) {
@@ -19,6 +28,28 @@ class MainScreen extends Component {
     }
   }
 
+  static contextTypes = {drawer: React.PropTypes.object};
+
+  componentWillMount() {
+// ...
+
+debugger;
+// Attempt a login using the Facebook login dialog,
+// asking for default permissions.
+LoginManager.logInWithReadPermissions(['public_profile']).then(
+  function(result) {
+    if (result.isCancelled) {
+      alert('Login was cancelled');
+    } else {
+      alert('Login was successful with permissions: '
+        + result.grantedPermissions.toString());
+    }
+  },
+  function(error) {
+    alert('Login failed with error: ' + error);
+  }
+);
+  }
   render() {
     return (
       <View style={styles.container}>
@@ -38,6 +69,10 @@ class MainScreen extends Component {
               source={require('../../images/coffeeButton.png')}
             />
           </TouchableHighlight>
+          {/* <Icon.Button name="facebook" backgroundColor="#3b5998" onPress={this.loginWithFacebook}>
+            Login with Facebook
+          </Icon.Button> */}
+          <Login />
         </View>
       </View>
     );
@@ -45,7 +80,7 @@ class MainScreen extends Component {
 
   openDrawer() {
     // if(!this.state.isDrawerOpen) {
-        this.props.drawer.open();
+        this.context.drawer.open();
     //     this.setState({
     //       isDrawerOpen: true
     //     })
@@ -99,5 +134,11 @@ const styles = StyleSheet.create({
     height: 64,
   }
 });
+
+const myButton = (
+  <Icon.Button name="facebook" backgroundColor="#3b5998" onPress={this.loginWithFacebook}>
+    Login with Facebook
+  </Icon.Button>
+);
 
 export default MainScreen;

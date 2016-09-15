@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import MainScreen from './drawer';
 import Leaderboard from './leaderboard';
+import PendingCoffees from './pendingCoffees';
 
 class TabBarExample extends React.Component {
   static title = '<TabBarIOS>';
@@ -32,9 +33,13 @@ class TabBarExample extends React.Component {
   render() {
     return (
       <TabBarIOS
-        unselectedTintColor="yellow"
-        tintColor="white"
-        barTintColor="darkslateblue">
+        unselectedTintColor="black"
+        // tintColor="rgb(177, 237, 241)"
+        tintColor="blue"
+        // barTintColor="darkslateblue"
+        // barTintColor="rgb(241, 241, 241)"
+        barTintColor="white"
+        >
         <TabBarIOS.Item
           title="Home"
           // icon={{uri: base64Icon, scale: 3}}
@@ -64,6 +69,21 @@ class TabBarExample extends React.Component {
           // selectedIcon={require('./relay.png')}
           renderAsOriginal
           title="Leaderboard"
+          selected={this.state.selectedTab === 'leaderboard'}
+          onPress={() => {
+            this.setState({
+              selectedTab: 'leaderboard',
+              presses: this.state.presses + 1
+            });
+          }}>
+          {/* {this._renderContent('#21551C', 'Green Tab', this.state.presses)} */}
+          <Leaderboard />
+        </TabBarIOS.Item>
+        <TabBarIOS.Item
+          // icon={require('./flux.png')}
+          // selectedIcon={require('./relay.png')}
+          renderAsOriginal
+          title="Checklist"
           selected={this.state.selectedTab === 'greenTab'}
           onPress={() => {
             this.setState({
@@ -72,7 +92,7 @@ class TabBarExample extends React.Component {
             });
           }}>
           {/* {this._renderContent('#21551C', 'Green Tab', this.state.presses)} */}
-          <Leaderboard />
+          <PendingCoffees />
         </TabBarIOS.Item>
       </TabBarIOS>
     );

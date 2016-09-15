@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 
 import MainScreen from './mainScreen';
-import PendingCooffees from './pendingCoffees';
+import PendingCooffees from './notifications';
 import Drawer from 'react-native-drawer';
 
 export default class DrawerComp extends Component {
@@ -20,13 +20,14 @@ export default class DrawerComp extends Component {
     this.openControlPanel = this.openControlPanel.bind(this);
     this.coffeeClick = this.coffeeClick.bind(this);
   }
+  static contextTypes = {drawer: React.PropTypes.object}
 
   closeControlPanel() {
     this._drawer.close()
   }
 
   openControlPanel(){
-    this._drawer.open()
+    this.context.drawer.open()
   }
 
 
