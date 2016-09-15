@@ -5,7 +5,7 @@ import {
   View,
   TouchableHighlight,
   Image
-} from 'react-native';
+} from 'react-native'; 
 
 // const FBSDK = require('react-native-fbsdk');
 // const {
@@ -31,24 +31,9 @@ class MainScreen extends Component {
   static contextTypes = {drawer: React.PropTypes.object};
 
   componentWillMount() {
-// ...
 
-// Attempt a login using the Facebook login dialog,
-// asking for default permissions.
-LoginManager.logInWithReadPermissions(['public_profile', 'user_friends']).then(
-  function(result) {
-    if (result.isCancelled) {
-      alert('Login was cancelled');
-    } else {
-      alert('Login was successful with permissions: '
-        + result.grantedPermissions.toString());
-    }
-  },
-  function(error) {
-    alert('Login failed with error: ' + error);
   }
-);
-  }
+
   render() {
     return (
       <View style={styles.container}>

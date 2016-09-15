@@ -6,6 +6,7 @@ import {
   Text,
   View
 } from 'react-native';
+import {LoginManager} from 'react-native-fbsdk';
 import MainScreen from './drawer';
 import Leaderboard from './leaderboard';
 import PendingCoffees from './pendingCoffees';
@@ -16,7 +17,7 @@ class TabBarExample extends React.Component {
   static displayName = 'TabBarExample';
 
   state = {
-    selectedTab: 'redTab',
+    selectedTab: 'blueTab',
     notifCount: 0,
     presses: 0,
   };
@@ -61,7 +62,7 @@ class TabBarExample extends React.Component {
         barTintColor="white"
         >
         <TabBarIOS.Item
-          title="Home"
+          // title="Home"
           icon={require('../../images/home_icon.png')}
           selected={this.state.selectedTab === 'blueTab'}
           onPress={() => {
@@ -73,22 +74,25 @@ class TabBarExample extends React.Component {
           <MainScreen />
         </TabBarIOS.Item>
         <TabBarIOS.Item
-          systemIcon="history"
-          badge={this.state.notifCount > 0 ? this.state.notifCount : undefined}
-          selected={this.state.selectedTab === 'redTab'}
+          icon={require('../../images/checklist2.png')}
+          // selectedIcon={require('./relay.png')}
+          // renderAsOriginal
+          // title="Checklist"
+          selected={this.state.selectedTab === 'greenTab'}
           onPress={() => {
             this.setState({
-              selectedTab: 'redTab',
-              notifCount: this.state.notifCount + 1,
+              selectedTab: 'greenTab',
+              presses: this.state.presses + 1
             });
           }}>
-          {this._renderContent('#783E33', 'Red Tab', this.state.notifCount)}
+          {/* {this._renderContent('#21551C', 'Green Tab', this.state.presses)} */}
+          <PendingCoffees />
         </TabBarIOS.Item>
         <TabBarIOS.Item
           icon={require('../../images/winnericon.png')}
           // selectedIcon={require('./relay.png')}
           // renderAsOriginal
-          title="Leaderboard"
+          // title="Leaderboard"
           selected={this.state.selectedTab === 'leaderboard'}
           onPress={() => {
             this.setState({
@@ -100,19 +104,17 @@ class TabBarExample extends React.Component {
           <Leaderboard />
         </TabBarIOS.Item>
         <TabBarIOS.Item
-          icon={require('../../images/checklist2.png')}
-          // selectedIcon={require('./relay.png')}
-          // renderAsOriginal
-          title="Checklist"
-          selected={this.state.selectedTab === 'greenTab'}
+          // systemIcon="history"
+          icon={require('../../images/friendsico.png')}
+          badge={this.state.notifCount > 0 ? this.state.notifCount : undefined}
+          selected={this.state.selectedTab === 'redTab'}
           onPress={() => {
             this.setState({
-              selectedTab: 'greenTab',
-              presses: this.state.presses + 1
+              selectedTab: 'redTab',
+              notifCount: this.state.notifCount + 1,
             });
           }}>
-          {/* {this._renderContent('#21551C', 'Green Tab', this.state.presses)} */}
-          <PendingCoffees />
+          {this._renderContent('#783E33', 'Red Tab', this.state.notifCount)}
         </TabBarIOS.Item>
       </TabBarIOS>
     );
