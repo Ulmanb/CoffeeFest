@@ -6,7 +6,7 @@ import {
   Text,
   StyleSheet,
 } from 'react-native';
-import LeaderboardList from './listView';
+import LeaderboardList from './listView2';
 
 export default class MyComponent extends Component {
   render() {

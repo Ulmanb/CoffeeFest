@@ -39,9 +39,11 @@ var ListViewSimpleExample = React.createClass({
       //   noSpacer={true}
       //   noScroll={true}>
         <View>
+        <View style={styles.emptyView}>
+        </View>
         <View style = {styles.headerView}>
           <Text style={styles.headerText}>
-            Header!
+            Leaderboard
           </Text>
         </View>
         <ListView
@@ -145,17 +147,22 @@ var styles = StyleSheet.create({
     flex: 1,
   },
   listView: {
-    flex: 10
+    // flex: 10
   },
   headerText: {
     fontSize: 20,
-    justifyContent: 'center',
-    alignItems: 'center'
+    // justifyContent: 'center',
+    // alignItems: 'center'
   },
   headerView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
+    // flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    borderTopWidth:1,
+    height: 10
+  },
+  emptyView: {
+    height:15
   }
 });
 
