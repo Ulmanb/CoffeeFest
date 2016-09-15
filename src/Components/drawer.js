@@ -19,11 +19,19 @@ export default class DrawerComp extends Component {
     this.closeControlPanel = this.closeControlPanel.bind(this);
     this.openControlPanel = this.openControlPanel.bind(this);
     this.coffeeClick = this.coffeeClick.bind(this);
+    this.setScene = this.setScene.bind(this);
   }
   static contextTypes = {drawer: React.PropTypes.object}
 
   closeControlPanel() {
     this._drawer.close()
+  }
+
+  setScene() {
+    this._drawer.close()
+    this.setState({
+      blah: 'a'
+    });
   }
 
   openControlPanel(){

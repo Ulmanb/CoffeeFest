@@ -5,7 +5,7 @@ import {
   View,
   TouchableHighlight,
   Image
-} from 'react-native'; 
+} from 'react-native';
 
 // const FBSDK = require('react-native-fbsdk');
 // const {
@@ -39,8 +39,8 @@ class MainScreen extends Component {
       <View style={styles.container}>
         <View style={styles.drawerContainer}>
         <View style={styles.logoContainer}>
-          <Image source={require('../../images/LOGO.png')}
-                 style={styles.logo}/>
+          {/* <Image source={require('../../images/LOGO.png')}
+                 style={styles.logo}/> */}
         </View>
           <TouchableHighlight style={styles.toolbar}
             onPress={this.openDrawer}>

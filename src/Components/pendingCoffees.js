@@ -28,7 +28,7 @@ export default class MyComponent extends Component {
 
   render() {
     return (
-      <ListView
+      <ListView style={styles.listView}
         dataSource={this.state.dataSource}
         //  renderRow={(rowData) => <Text>{rowData}</Text>}
         renderRow={this.renderLine}
