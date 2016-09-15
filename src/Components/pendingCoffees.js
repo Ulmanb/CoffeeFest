@@ -42,13 +42,7 @@ export default class MyComponent extends Component {
         <Image style = {styles.thumb} source={require('../../images/coffeeButton.png')} />
         <View style={styles.textContainer}>
           <Text style={styles.text}>
-            {rowData.name}
-          </Text>
-          <Text style={styles.text}>
-            {rowData.level}
-          </Text>
-          <Text style={styles.text}>
-            {`${rowData.points} pts.`}
+            {`${rowData.name} is making ☕️!`}
           </Text>
         </View>
       </View>
@@ -79,20 +73,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#F6F6F6',
   },
   thumb: {
-    width: 64,
-    height: 64,
+    width: 54,
+    height: 54,
   },
   text: {
     flex: 1,
   },
   textContainer: {
-    marginLeft: 20,
+    marginLeft: 10,
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around'
   },
   pointsView: {
-    
+
   }
 });

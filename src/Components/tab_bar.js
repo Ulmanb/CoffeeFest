@@ -6,7 +6,7 @@ import {
   Text,
   View
 } from 'react-native';
-import MainScreen from './mainScreen';
+import MainScreen from './drawer';
 import Leaderboard from './leaderboard';
 
 class TabBarExample extends React.Component {
@@ -36,7 +36,7 @@ class TabBarExample extends React.Component {
         tintColor="white"
         barTintColor="darkslateblue">
         <TabBarIOS.Item
-          title="Blue Tab"
+          title="Home"
           // icon={{uri: base64Icon, scale: 3}}
           selected={this.state.selectedTab === 'blueTab'}
           onPress={() => {
@@ -63,7 +63,7 @@ class TabBarExample extends React.Component {
           // icon={require('./flux.png')}
           // selectedIcon={require('./relay.png')}
           renderAsOriginal
-          title="More"
+          title="Leaderboard"
           selected={this.state.selectedTab === 'greenTab'}
           onPress={() => {
             this.setState({
