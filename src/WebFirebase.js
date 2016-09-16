@@ -1,6 +1,4 @@
 
-//<script src="https://www.gstatic.com/firebasejs/3.4.0/firebase.js"></script>
-
 import * as firebase from 'firebase';
 import config from '../config';
 
@@ -11,7 +9,7 @@ export function getAllUsers(){
   var data_container = null;
   var users = firebase.database().ref('users/');
   users.on('value', function(data) {
-    data_container = data.val());
+    data_container = data.val();
   });
   return data_container;
 };
@@ -21,21 +19,22 @@ export function getUserById(userId){
   var data_container = null;
   var user = firebase.database().ref('users/'+userId);
   user.on('value', function(data){
-    data_container = data.val());
+    data_container = data.val();
   });
   return data_container;
 };
 
 //Add new user to db
-export function updateUser(firebaseUid, facebookUid, photoURL, friends) {
+export function updateUser(firebaseUid, facebookUid, displayName, friends) {
     var postData = {
       firebaseUid,
       facebookUid,
-      photo: photoURL || '',
+      displayName,
+      // photo: photoURL || '',
       friends: friends || []
     };
     var updates = {};
-    updates['/users/' + UserId] = postData;
+    updates['/users/' + facebookUid] = postData;
     return firebase.database().ref().update(updates);
 };
 
@@ -43,17 +42,17 @@ export function updateUser(firebaseUid, facebookUid, photoURL, friends) {
 
 
 export function createUserWithToken(token, facebookUid){
-  var provider = new firebase.auth.FacebookAuthProvider();
-  var token = firebase.auth().FacebookAuthProvider.credential(token);
+  // var provider = new firebase.auth.FacebookAuthProvider();
+  var credential = firebase.auth.FacebookAuthProvider.credential(token);
   var user = null;
 
-  firebase.auth().signInWithPopup(provider).then(function(result) {
+  firebase.auth().signInWithCredential(credential).then(function(user) {
     // This gives you a Facebook Access Token. You can use it to access the Facebook API.
-    token = result.credential.accessToken;
+    // token = result.credential.accessToken;
     // The signed-in user info.
-    user = result.user;
+    // user = result.user;
 
-    updateUser(user.uid, facebookUid);
+    updateUser(user.uid, facebookUid, user.displayName);
     // ...
   }).catch(function(error) {
     // Handle Errors here.

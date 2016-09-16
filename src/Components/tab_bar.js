@@ -10,6 +10,7 @@ import {
 import MainScreen from './drawer';
 import Leaderboard from './leaderboard';
 import PendingCoffees from './pendingCoffees';
+import {createUserWithToken} from '../WebFirebase';
 
 // const FBSDK = require('react-native-fbsdk');
 import  {
@@ -52,14 +53,13 @@ class TabBarExample extends React.Component {
     const setS = this.setState.bind(this);
 
     const responseInfoCallback = (error, result) => {
-      debugger;
       console.log('response');
       if (error) {
         console.log(error)
         alert('Error fetching data: ' + error.toString());
       } else {
         console.log(result);
-        debugger;
+
         alert('Success fetching data: ' + result.toString());
         setS({
           'friends': result.data
@@ -80,6 +80,9 @@ class TabBarExample extends React.Component {
             AccessToken.getCurrentAccessToken().then(
               (data) => {
                   let accessToken = data.accessToken;
+                  debugger;
+                  createUserWithToken(accessToken, data.userID);
+
                   // let accessToken = 'EAACEdEose0cBAALE7ZALYRpB1RyHdDKfvQekq1j0U6YWDRY8tvUXTaJpeq6tj8RMlco3edjtCZCeLUrl6zcvePe7nb0ibPVW6unPKftigLeauTOILMnnMtDnnR2CCTDoFOav6I4p4sAuzbNnZA4WmUhXwi78jZAl603FLRoPtAZDZD'
                   alert(accessToken.toString())
 

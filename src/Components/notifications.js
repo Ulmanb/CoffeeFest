@@ -12,8 +12,6 @@ import {
 export default class MyComponent extends Component {
   componentWillMount(){
     // TODO fetch()
-    debugger;
-
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
     this.setState({
@@ -53,8 +51,6 @@ export default class MyComponent extends Component {
   }
 
   leaderboardLine(rowData){
-    debugger;
-
     return (
       <View style={styles.row}>
         <Image style = {styles.thumb} source={{uri : rowData.picture.data.url}} />
