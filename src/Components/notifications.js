@@ -12,6 +12,23 @@ import {
 export default class MyComponent extends Component {
   componentWillMount(){
     // TODO fetch()
+    debugger;
+
+    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+
+    this.setState({
+      friends: this.props.friends,
+      dataSource: ds.cloneWithRows( this.props.friends )
+    });
+  }
+
+  componentWillReceiveProps(nextProps, nextState) {
+    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+
+    this.setState({
+      friends: nextProps.friends,
+      dataSource: ds.cloneWithRows( nextProps.friends )
+    });
   }
 
   constructor() {
@@ -19,15 +36,14 @@ export default class MyComponent extends Component {
     this.leaderboardLine = this.leaderboardLine.bind(this);
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
-      dataSource: ds.cloneWithRows(
-        [{name: 'Adam Lauz',level: "Grand Barista", points: 10},
-         {name: 'Tal Shemesh', level:"Novice", points: 3}]),
+      friends: [],
+      dataSource: ds.cloneWithRows( [] ),
     };
   }
 
   render() {
     return (
-      <ListView
+      <ListView style={styles.listView}
         dataSource={this.state.dataSource}
         //  renderRow={(rowData) => <Text>{rowData}</Text>}
         renderRow={this.leaderboardLine}
@@ -37,12 +53,17 @@ export default class MyComponent extends Component {
   }
 
   leaderboardLine(rowData){
+    debugger;
+
     return (
       <View style={styles.row}>
-        <Image style = {styles.thumb} source={require('../../images/coffeeButton.png')} />
+        <Image style = {styles.thumb} source={{uri : rowData.picture.data.url}} />
         <View style={styles.textContainer}>
-          <Text style={styles.text}>
-            {`${rowData.name} is making ☕️!`}
+          <Text style={styles.nameText}>
+            {`${rowData.name} `}
+          </Text>
+          <Text style = {styles.text}>
+            is making ☕️!
           </Text>
         </View>
       </View>
@@ -70,14 +91,23 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     padding: 10,
-    backgroundColor: '#F6F6F6',
+    // backgroundColor: '#F6F6F6',
+    // backgroundColor: '',
+    backgroundColor: 'rgb(104, 105, 106)'
   },
   thumb: {
     width: 54,
     height: 54,
   },
+  nameText: {
+    // flex: 1,
+    color: 'white',
+    fontWeight: 'bold'
+  },
   text: {
-    flex: 1,
+    // flex: 1,
+    color: 'white',
+    // fontWeight: 'bold'
   },
   textContainer: {
     marginLeft: 10,
@@ -85,6 +115,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around'
+  },
+  listView: {
+    backgroundColor: 'rgb(104, 105, 106)'
   },
   pointsView: {
 

@@ -6,21 +6,37 @@ import {
   Text,
   View
 } from 'react-native';
-import {LoginManager} from 'react-native-fbsdk';
+// import {LoginManager} from 'react-native-fbsdk';
 import MainScreen from './drawer';
 import Leaderboard from './leaderboard';
 import PendingCoffees from './pendingCoffees';
 
+// const FBSDK = require('react-native-fbsdk');
+import  {
+  GraphRequest,
+  GraphRequestManager,
+  AccessToken,
+  LoginManager
+} from 'react-native-fbsdk';
+
 class TabBarExample extends React.Component {
+
   static title = '<TabBarIOS>';
   static description = 'Tab-based navigation.';
   static displayName = 'TabBarExample';
 
-  state = {
-    selectedTab: 'blueTab',
-    notifCount: 0,
-    presses: 0,
-  };
+  constructor(props) {
+    super(props);
+
+    // this.responseInfoCallback = this.responseInfoCallback.bind(this);
+    this.state = {
+      selectedTab: 'blueTab',
+      notifCount: 0,
+      friends: [],
+      presses: 0,
+    };
+  }
+
 
   _renderContent = (color: string, pageText: string, num?: number) => {
     return (
@@ -33,23 +49,72 @@ class TabBarExample extends React.Component {
 
   componentWillMount() {
     // ...
+    const setS = this.setState.bind(this);
+
+    const responseInfoCallback = (error, result) => {
+      debugger;
+      console.log('response');
+      if (error) {
+        console.log(error)
+        alert('Error fetching data: ' + error.toString());
+      } else {
+        console.log(result);
+        debugger;
+        alert('Success fetching data: ' + result.toString());
+        setS({
+          'friends': result.data
+        });
+      }
+    }
 
     // Attempt a login using the Facebook login dialog,
     // asking for default permissions.
-    LoginManager.logInWithReadPermissions(['public_profile', 'user_friends']).then(
+    LoginManager.logInWithReadPermissions( ['user_friends']).then(
       function(result) {
         if (result.isCancelled) {
           alert('Login was cancelled');
         } else {
           alert('Login was successful with permissions: '
             + result.grantedPermissions.toString());
+            //
+            AccessToken.getCurrentAccessToken().then(
+              (data) => {
+                  let accessToken = data.accessToken;
+                  // let accessToken = 'EAACEdEose0cBAALE7ZALYRpB1RyHdDKfvQekq1j0U6YWDRY8tvUXTaJpeq6tj8RMlco3edjtCZCeLUrl6zcvePe7nb0ibPVW6unPKftigLeauTOILMnnMtDnnR2CCTDoFOav6I4p4sAuzbNnZA4WmUhXwi78jZAl603FLRoPtAZDZD'
+                  alert(accessToken.toString())
+
+                  const infoRequest = new GraphRequest(
+                    // '/me/taggable_friends',
+                    '/me/friends',
+                    {
+                      accessToken: accessToken,
+                      parameters: {
+                        // limit: '100',
+                        fields: {
+                          string: 'id,name,picture'
+                        }
+                      }
+                    },
+                    // (err, result) => {
+                    //   debugger;
+                    //   this.setState({
+                    //     friends: result.data
+                    //   });
+                    // }
+                    responseInfoCallback
+                  );
+
+                  // Start the graph request.
+                  new GraphRequestManager().addRequest(infoRequest).start();
+                }
+                ,
+                function(error) {
+                  alert('Login failed with error: ' + error);
+                }
+              );
+            }
+          })
         }
-      },
-      function(error) {
-        alert('Login failed with error: ' + error);
-      }
-    );
-  }
 
   render() {
     return (
@@ -71,7 +136,7 @@ class TabBarExample extends React.Component {
             });
           }}>
           {/* {this._renderContent('#414A8C', 'Blue Tab')} */}
-          <MainScreen />
+          <MainScreen friends={this.state.friends} />
         </TabBarIOS.Item>
         <TabBarIOS.Item
           icon={require('../../images/checklist2.png')}

@@ -21,6 +21,7 @@ export default class DrawerComp extends Component {
     this.coffeeClick = this.coffeeClick.bind(this);
     this.setScene = this.setScene.bind(this);
   }
+
   static contextTypes = {drawer: React.PropTypes.object}
 
   closeControlPanel() {
@@ -41,6 +42,7 @@ export default class DrawerComp extends Component {
 
   componentWillMount() {
     // this.openControlPanel();
+    // debugger;
   }
 
   render () {
@@ -48,7 +50,7 @@ export default class DrawerComp extends Component {
       <Drawer
         type="static"
         // content={<View style={styles.container} />}
-        content={<PendingCooffees />}
+        content={<PendingCooffees friends={this.props.friends}/>}
         openDrawerOffset={100}
         styles={drawerStyles}
         ref={(ref) => this._drawer = ref}
