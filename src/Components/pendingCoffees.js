@@ -1,6 +1,8 @@
 /* @flow */
 
 import React, { Component } from 'react';
+import { Header } from './commons';
+
 import {
   View,
   Text,
@@ -28,18 +30,31 @@ export default class MyComponent extends Component {
 
   render() {
     return (
-      <ListView style={styles.listView}
-        dataSource={this.state.dataSource}
-        //  renderRow={(rowData) => <Text>{rowData}</Text>}
-        renderRow={this.renderLine}
-        renderSeparator={this._renderSeparator}
-      />
+        <View style={{flex:1
+          // ,borderColor:'yellow'
+          // ,borderWidth:2
+        }}>
+        <Header headerText="Pending"
+        // style={{borderColor:'red', borderWidth:3 }}
+        />
+        {this._renderSeparator()}
+        <ListView style={styles.listView}
+          dataSource={this.state.dataSource}
+          renderRow={this.renderLine}
+          renderSeparator={this._renderSeparator}
+          enableEmptySections={true}
+          // renderHeader={() => <View style={{backgroundColor: '#CCCCCC'}}/>}
+          renderHeader={this._renderSeparator}
+          automaticallyAdjustContentInsets={false}
+        />
+        </View>
     );
   }
 
   renderLine(rowData){
     return (
-      <View style={styles.row}>
+      <View style={[styles.row
+      ]}>
         <Image style = {styles.thumb} source={require('../../images/coffeeButton.png')} />
         <View style={styles.textContainer}>
           <Text style={styles.text}>
@@ -70,14 +85,20 @@ export default class MyComponent extends Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
+  // container: {
+  //   flex: 1,
+  // },
   row: {
+    // borderWidth: 1,
+    // borderColor:'red',
     flexDirection: 'row',
     justifyContent: 'center',
-    padding: 10,
-    backgroundColor: '#F6F6F6',
+    // marginTop: ,
+    padding: 5,
+    paddingLeft: 10,
+    // backgroundColor: '#F6F6F6',
+    // borderTopWidth: 1,
+    backgroundColor: 'white',
   },
   thumb: {
     width: 54,
@@ -95,5 +116,12 @@ const styles = StyleSheet.create({
   },
   pointsView: {
 
+  },
+  listView: {
+    margin: 0,
+    padding: 0,
+    flex: 1,
+    // borderColor: 'red',
+    // borderWidth: 2
   }
 });

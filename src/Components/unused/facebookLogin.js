@@ -19,7 +19,7 @@ export default class Login extends Component{
     return (
       <View>
         <LoginButton
-          publishPermissions={["publish_actions"]}
+          publishPermissions={["user_friends"]}
           onLoginFinished={
             (error, result) => {
               if (error) {

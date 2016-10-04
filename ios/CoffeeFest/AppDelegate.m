@@ -8,14 +8,15 @@
  */
 
 #import "AppDelegate.h"
-
 #import "RCTBundleURLProvider.h"
 #import "RCTRootView.h"
-
-
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 
 @implementation AppDelegate
+
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+    [FBSDKAppEvents activateApp];
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {

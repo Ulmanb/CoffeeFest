@@ -6,13 +6,12 @@ import {
   Text,
   View
 } from 'react-native';
-// import {LoginManager} from 'react-native-fbsdk';
+
 import MainScreen from './drawer';
 import Leaderboard from './leaderboard';
 import PendingCoffees from './pendingCoffees';
 import {createUserWithToken} from '../WebFirebase';
 
-// const FBSDK = require('react-native-fbsdk');
 import  {
   GraphRequest,
   GraphRequestManager,
@@ -67,9 +66,10 @@ class TabBarExample extends React.Component {
       }
     }
 
+    // debugger;
     // Attempt a login using the Facebook login dialog,
     // asking for default permissions.
-    LoginManager.logInWithReadPermissions( ['user_friends']).then(
+    var promise = LoginManager.logInWithReadPermissions( ['user_friends']).then(
       function(result) {
         if (result.isCancelled) {
           alert('Login was cancelled');
@@ -116,6 +116,8 @@ class TabBarExample extends React.Component {
                 }
               );
             }
+          }).catch(reason => {
+            debugger;
           })
         }
 

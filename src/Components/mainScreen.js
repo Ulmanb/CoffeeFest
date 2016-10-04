@@ -7,41 +7,28 @@ import {
   Image
 } from 'react-native';
 
-// const FBSDK = require('react-native-fbsdk');
-// const {
-// LoginManager,
-// } = FBSDK;
-
 import {LoginManager} from 'react-native-fbsdk';
+import Login from './unused/facebookLogin';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
-import Login from './facebookLogin';
 
 class MainScreen extends Component {
   constructor(props) {
     super(props);
     this.onCoffeeClick = this.onCoffeeClick.bind(this);
     this.openDrawer = this.openDrawer.bind(this);
-
-    this.state = {
-      isDrawerOpen: false
-    }
   }
 
-  static contextTypes = {drawer: React.PropTypes.object};
-
-  componentWillMount() {
-
-  }
+  static contextTypes = { drawer: React.PropTypes.object };
 
   render() {
     return (
       <View style={styles.container}>
         <View style={styles.drawerContainer}>
-        <View style={styles.logoContainer}>
-          {/* <Image source={require('../../images/LOGO.png')}
-                 style={styles.logo}/> */}
-        </View>
+          <View style={styles.logoContainer}>
+            {/* <Image source={require('../../images/LOGO.png')}
+                   style={styles.logo}/> */}
+          </View>
           <TouchableHighlight style={styles.toolbar}
             onPress={this.openDrawer}>
             <Image source={require('../../images/makelist.png')}
@@ -57,9 +44,6 @@ class MainScreen extends Component {
               source={require('../../images/aaaa.png')}
             />
           </TouchableHighlight>
-          {/* <Icon.Button name="facebook" backgroundColor="#3b5998" onPress={this.loginWithFacebook}>
-            Login with Facebook
-          </Icon.Button> */}
           <Login />
         </View>
       </View>
@@ -67,18 +51,7 @@ class MainScreen extends Component {
   }
 
   openDrawer() {
-    // if(!this.state.isDrawerOpen) {
-        this.context.drawer.open();
-    //     this.setState({
-    //       isDrawerOpen: true
-    //     })
-    // }
-    // else {
-    //   this.props.drawer.close();
-    //   this.setState({
-    //     isDrawerOpen: false
-    //   })
-    // }
+    this.context.drawer.open();
   }
 
   onCoffeeClick() {

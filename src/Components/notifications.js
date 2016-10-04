@@ -31,7 +31,7 @@ export default class MyComponent extends Component {
 
   constructor() {
     super();
-    this.leaderboardLine = this.leaderboardLine.bind(this);
+    this.notificationLine = this.notificationLine.bind(this);
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
       friends: [],
@@ -44,13 +44,14 @@ export default class MyComponent extends Component {
       <ListView style={styles.listView}
         dataSource={this.state.dataSource}
         //  renderRow={(rowData) => <Text>{rowData}</Text>}
-        renderRow={this.leaderboardLine}
+        renderRow={this.notificationLine}
         renderSeparator={this._renderSeparator}
+        enableEmptySections={true}
       />
     );
   }
 
-  leaderboardLine(rowData){
+  notificationLine(rowData){
     return (
       <View style={styles.row}>
         <Image style = {styles.thumb} source={{uri : rowData.picture.data.url}} />

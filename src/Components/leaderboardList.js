@@ -32,6 +32,7 @@ export default class MyComponent extends Component {
         //  renderRow={(rowData) => <Text>{rowData}</Text>}
         renderRow={this.leaderboardLine}
         renderSeparator={this._renderSeparator}
+        enableEmptySections={true}
       />
     );
   }
@@ -93,6 +94,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around'
   },
   pointsView: {
-    
+
   }
 });
