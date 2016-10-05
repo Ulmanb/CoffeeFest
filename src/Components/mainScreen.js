@@ -4,6 +4,7 @@ import {
   Text,
   View,
   TouchableHighlight,
+  TouchableOpacity,
   Image
 } from 'react-native';
 
@@ -36,14 +37,14 @@ class MainScreen extends Component {
           </TouchableHighlight>
         </View>
         <View style={styles.buttonContainer}>
-          <TouchableHighlight
-            style = {styles.coffeeButton}
-            underlayColor="grey"
+          <TouchableOpacity
+            style={styles.coffeeButton}
+            // underlayColor="grey"
             onPress={this.onCoffeeClick}>
             <Image
               source={require('../../images/aaaa.png')}
             />
-          </TouchableHighlight>
+          </TouchableOpacity>
           <Login />
         </View>
       </View>

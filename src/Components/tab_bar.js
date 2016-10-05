@@ -38,7 +38,7 @@ class TabBarExample extends React.Component {
   }
 
 
-  _renderContent = (color: string, pageText: string, num?: number) => {
+  _renderContent = (color, pageText, num) => {
     return (
       <View style={[styles2.tabContent, {backgroundColor: color}]}>
         <Text style={styles2.tabText}>{pageText}</Text>
@@ -48,78 +48,64 @@ class TabBarExample extends React.Component {
   };
 
   componentWillMount() {
-    // ...
-    const setS = this.setState.bind(this);
-
-    const responseInfoCallback = (error, result) => {
-      console.log('response');
-      if (error) {
-        console.log(error)
-        alert('Error fetching data: ' + error.toString());
-      } else {
-        console.log(result);
-
-        alert('Success fetching data: ' + result.toString());
-        setS({
-          'friends': result.data
-        });
-      }
-    }
-
+    AccessToken.getCurrentAccessToken().then(data => {
+      if(!data)
+        return LoginManager.logInWithReadPermissions(['user_friends']);
+    })
     // debugger;
     // Attempt a login using the Facebook login dialog,
     // asking for default permissions.
-    var promise = LoginManager.logInWithReadPermissions( ['user_friends']).then(
-      function(result) {
+
+    .then(
+      result => {
         if (result.isCancelled) {
           alert('Login was cancelled');
         } else {
-          alert('Login was successful with permissions: '
-            + result.grantedPermissions.toString());
-            //
-            AccessToken.getCurrentAccessToken().then(
-              (data) => {
-                  let accessToken = data.accessToken;
-                  debugger;
-                  createUserWithToken(accessToken, data.userID);
+          // alert('Login was successful with permissions: '
+          //   + result.grantedPermissions.toString());
 
-                  // let accessToken = 'EAACEdEose0cBAALE7ZALYRpB1RyHdDKfvQekq1j0U6YWDRY8tvUXTaJpeq6tj8RMlco3edjtCZCeLUrl6zcvePe7nb0ibPVW6unPKftigLeauTOILMnnMtDnnR2CCTDoFOav6I4p4sAuzbNnZA4WmUhXwi78jZAl603FLRoPtAZDZD'
-                  alert(accessToken.toString())
-
-                  const infoRequest = new GraphRequest(
-                    // '/me/taggable_friends',
-                    '/me/friends',
-                    {
-                      accessToken: accessToken,
-                      parameters: {
-                        // limit: '100',
-                        fields: {
-                          string: 'id,name,picture'
-                        }
-                      }
-                    },
-                    // (err, result) => {
-                    //   debugger;
-                    //   this.setState({
-                    //     friends: result.data
-                    //   });
-                    // }
-                    responseInfoCallback
-                  );
-
-                  // Start the graph request.
-                  new GraphRequestManager().addRequest(infoRequest).start();
-                }
-                ,
-                function(error) {
-                  alert('Login failed with error: ' + error);
-                }
-              );
-            }
-          }).catch(reason => {
-            debugger;
-          })
+          return AccessToken.getCurrentAccessToken();
         }
+      })
+    .then(
+      data => {
+          let accessToken = data.accessToken;
+          debugger;
+          createUserWithToken(accessToken, data.userID);
+
+          // let accessToken = 'EAACEdEose0cBAALE7ZALYRpB1RyHdDKfvQekq1j0U6YWDRY8tvUXTaJpeq6tj8RMlco3edjtCZCeLUrl6zcvePe7nb0ibPVW6unPKftigLeauTOILMnnMtDnnR2CCTDoFOav6I4p4sAuzbNnZA4WmUhXwi78jZAl603FLRoPtAZDZD'
+          // alert(accessToken.toString())
+
+          const infoRequest = new GraphRequest(
+            // '/me/taggable_friends',
+            '/me/friends',
+            {
+              accessToken: accessToken,
+              parameters: {
+                // limit: '100',
+                fields: {
+                  string: 'id,name,picture'
+                }
+              }
+            },
+            (err, result) => {
+              // debugger;
+              this.setState({
+                friends: result.data
+              });
+            }
+            // responseInfoCallback
+          );
+
+          // Start the graph request.
+          new GraphRequestManager().addRequest(infoRequest).start();
+        }
+      ).catch(reason => {
+        debugger;
+        alert('Login failed');
+        console.log(reason);
+      });
+  }
 
   render() {
     return (
