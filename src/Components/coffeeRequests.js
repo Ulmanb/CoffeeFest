@@ -34,7 +34,7 @@ export default class MyComponent extends Component {
           // ,borderColor:'yellow'
           // ,borderWidth:2
         }}>
-        <Header headerText="Pending"
+        <Header headerText="Requests"
         // style={{borderColor:'red', borderWidth:3 }}
         />
         {this._renderSeparator()}

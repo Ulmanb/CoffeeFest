@@ -1,6 +1,5 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
-  AppRegistry,
   StyleSheet,
   TabBarIOS,
   Text,
@@ -9,38 +8,32 @@ import {
 
 import MainScreen from './drawer';
 import Leaderboard from './leaderboard';
-import PendingCoffees from './pendingCoffees';
+import CoffeeRequests from './coffeeRequests';
 import {createUserWithToken} from '../WebFirebase';
 import {
   getFBAccessToken,
   getUsingFBFriends
 } from '../utils/facebookConnector';
 
-import  {
-  GraphRequest,
-  GraphRequestManager,
-  AccessToken,
-  LoginManager
-} from 'react-native-fbsdk';
-
-class TabBarExample extends React.Component {
-
-  static title = '<TabBarIOS>';
-  static description = 'Tab-based navigation.';
-  static displayName = 'TabBarExample';
+class TabBar extends React.Component {
 
   constructor(props) {
     super(props);
 
-    // this.responseInfoCallback = this.responseInfoCallback.bind(this);
+    this.tabs = {
+      main: 'Main',
+      leaderboard: 'Leaderboard',
+      coffeRequests: 'Requests',
+      friends: 'Friends'
+    }
+
     this.state = {
-      selectedTab: 'blueTab',
+      selectedTab: this.tabs.main,
       notifCount: 0,
       friends: [],
       presses: 0,
     };
   }
-
 
   _renderContent = (color, pageText, num) => {
     return (
@@ -55,9 +48,7 @@ class TabBarExample extends React.Component {
     // Get FB access token -> get the one used or get a new one
     getFBAccessToken()
     .then(data => {
-      debugger;
-      var test = createUserWithToken(data.accessToken, data.userID);
-      debugger;
+      createUserWithToken(data.accessToken, data.userID);
       return getUsingFBFriends(data.accessToken);
     })
     .then(result => {
@@ -66,7 +57,6 @@ class TabBarExample extends React.Component {
       });
     })
     .catch(reason => {
-      debugger;
       alert('Login failed');
       console.log(reason);
     });
@@ -85,10 +75,10 @@ class TabBarExample extends React.Component {
         <TabBarIOS.Item
           // title="Home"
           icon={require('../../images/home_icon.png')}
-          selected={this.state.selectedTab === 'blueTab'}
+          selected={this.state.selectedTab === this.tabs.main}
           onPress={() => {
             this.setState({
-              selectedTab: 'blueTab',
+              selectedTab: this.tabs.main,
             });
           }}>
           {/* {this._renderContent('#414A8C', 'Blue Tab')} */}
@@ -99,39 +89,37 @@ class TabBarExample extends React.Component {
           // selectedIcon={require('./relay.png')}
           // renderAsOriginal
           // title="Checklist"
-          selected={this.state.selectedTab === 'greenTab'}
+          selected={this.state.selectedTab === this.tabs.requests}
           onPress={() => {
             this.setState({
-              selectedTab: 'greenTab',
+              selectedTab: this.tabs.requests,
               presses: this.state.presses + 1
             });
           }}>
-          {/* {this._renderContent('#21551C', 'Green Tab', this.state.presses)} */}
-          <PendingCoffees />
+          <CoffeeRequests />
         </TabBarIOS.Item>
         <TabBarIOS.Item
           icon={require('../../images/winnericon.png')}
           // selectedIcon={require('./relay.png')}
           // renderAsOriginal
           // title="Leaderboard"
-          selected={this.state.selectedTab === 'leaderboard'}
+          selected={this.state.selectedTab === this.tabs.leaderboard}
           onPress={() => {
             this.setState({
-              selectedTab: 'leaderboard',
+              selectedTab: this.tabs.leaderboard,
               presses: this.state.presses + 1
             });
           }}>
-          {/* {this._renderContent('#21551C', 'Green Tab', this.state.presses)} */}
           <Leaderboard />
         </TabBarIOS.Item>
         <TabBarIOS.Item
           // systemIcon="history"
           icon={require('../../images/friendsico.png')}
           badge={this.state.notifCount > 0 ? this.state.notifCount : undefined}
-          selected={this.state.selectedTab === 'redTab'}
+          selected={this.state.selectedTab === this.tabs.friends}
           onPress={() => {
             this.setState({
-              selectedTab: 'redTab',
+              selectedTab: this.tabs.friends,
               notifCount: this.state.notifCount + 1,
             });
           }}>
@@ -153,4 +141,4 @@ var styles2 = StyleSheet.create({
   },
 });
 
-export default TabBarExample;
+export default TabBar;

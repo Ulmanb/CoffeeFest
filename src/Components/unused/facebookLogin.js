@@ -35,7 +35,7 @@ export default class Login extends Component{
               }
             }
           }
-          onLogoutFinished={() => alert("logout.")}/>
+          onLogoutFinished={() => 1 }/>
       </View>
     );
   }

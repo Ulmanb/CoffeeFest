@@ -9,16 +9,7 @@ import {
   Image
 } from 'react-native';
 
-export default class MyComponent extends Component {
-  componentWillMount(){
-    // TODO fetch()
-    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-
-    this.setState({
-      friends: this.props.friends,
-      dataSource: ds.cloneWithRows( this.props.friends )
-    });
-  }
+export default class Notifications extends Component {
 
   componentWillReceiveProps(nextProps, nextState) {
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});

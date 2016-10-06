@@ -4,6 +4,16 @@ import config from '../config';
 
 firebase.initializeApp(config);
 
+let _currUser = null;
+
+firebase.auth().onAuthStateChanged(function(user) {
+  if (user) {
+    _currUser = new User(user);
+  } else {
+    _currUser = null;
+  }
+});
+
 // Select all the users and their properties
 export function getAllUsers(){
   var data_container = null;
@@ -39,9 +49,60 @@ export function updateUser(firebaseUid, facebookUid, displayName, friends) {
 };
 
 
+export function makeCoffee() {
+  // console.log('makeCoffee');
+  // var { currentUser } = firebase.auth();
+  // console.log(currentUser);
+  // if (!currentUser)
+  //   throw new Error("Not logged in when making coffee");
+  //
+  // var userId = currentUser.uid;
+  // var userFacebookData = currentUser.providerData.filter(provider => provider.providerId === 'facebook.com')[0];
+  //
+  // if (!userFacebookData) {
+  //   throw new Error("no facebook data in make coffee - weird stuff");
+  // }
+  // else {
 
+    // const facebookId = _currUser.FacebookUID;
+    console.log(_currUser);
+    const { photoURL, FacebookUID, FirebaseUID, displayName } = _currUser;
+
+    var coffeeData = {
+      makerFacebook: FacebookUID,
+      makerFirebase: FirebaseUID,
+      makerName: displayName,
+      makerPhoto: photoURL,
+      timeStart: new Date(),
+      requests: [],
+    };
+
+    // var newCoffeeKey = firebase.database().ref().child('coffees').push().key;
+    // var updates = {};
+
+    // Since you can only make one coffee at a time
+    // updates['/coffees/' + userId] = coffeeData;
+
+    var p = firebase.database().ref('coffees/' + FacebookUID).set(coffeeData);
+    console.log(p);
+    setTimeout(getCoffees, 1000);
+    return p;
+}
+
+function getCurrentUser(){
+
+}
+
+export function getCoffees() {
+  var coffees = firebase.database().ref('coffees/');
+
+  coffees.on('value', function(snapshot) {
+    console.log(snapshot.val());
+  });
+}
 
 export function createUserWithToken(token, facebookUid){
+
   // var provider = new firebase.auth.FacebookAuthProvider();
   var credential = firebase.auth.FacebookAuthProvider.credential(token);
   var user = null;
@@ -65,3 +126,27 @@ export function createUserWithToken(token, facebookUid){
   });
 
 };
+
+class User {
+  constructor(FirebaseUser) {
+    this.FirebaseUID = FirebaseUser.uid;
+
+    if (!FirebaseUser)
+      throw new Error("Not logged in");
+
+    var userId = FirebaseUser.uid;
+    var userFacebookData = FirebaseUser.providerData.filter(provider => provider.providerId === 'facebook.com')[0];
+
+    if (!userFacebookData) {
+      throw new Error("no facebook data in - weird stuff");
+    }
+    else {
+      this.FacebookUID = userFacebookData.uid;
+      this.photoURL = userFacebookData.photoURL;
+      this.displayName = FirebaseUser.displayName;
+    }
+  }
+}
+// class DBManager {
+//   constructor(user.uid)
+// }

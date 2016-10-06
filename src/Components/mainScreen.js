@@ -8,8 +8,9 @@ import {
   Image
 } from 'react-native';
 
-import {LoginManager} from 'react-native-fbsdk';
+import { LoginManager } from 'react-native-fbsdk';
 import Login from './unused/facebookLogin';
+import { makeCoffee } from '../WebFirebase';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -57,6 +58,7 @@ class MainScreen extends Component {
 
   onCoffeeClick() {
     console.log("coffecClicked");
+    makeCoffee();
   }
 }
 
