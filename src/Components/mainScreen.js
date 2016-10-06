@@ -3,7 +3,7 @@ import {
   StyleSheet,
   Text,
   View,
-  TouchableHighlight,
+  TouchableWithoutFeedback,
   TouchableOpacity,
   Image
 } from 'react-native';
@@ -30,11 +30,11 @@ class MainScreen extends Component {
             {/* <Image source={require('../../images/LOGO.png')}
                    style={styles.logo}/> */}
           </View>
-          <TouchableHighlight style={styles.toolbar}
+          <TouchableWithoutFeedback style={styles.toolbar}
             onPress={this.openDrawer}>
             <Image source={require('../../images/makelist.png')}
                    style={styles.thumbnail}/>
-          </TouchableHighlight>
+          </TouchableWithoutFeedback>
         </View>
         <View style={styles.buttonContainer}>
           <TouchableOpacity

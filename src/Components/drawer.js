@@ -16,7 +16,6 @@ export default class DrawerComp extends Component {
         styles={drawerStyles}
         side='right'
         tweenHandler={Drawer.tweenPresets.parallax}
-        open = {false}
         tapToClose = {true}
         >
           <MainScreen />

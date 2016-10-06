@@ -46,13 +46,12 @@ export function createUserWithToken(token, facebookUid){
   var credential = firebase.auth.FacebookAuthProvider.credential(token);
   var user = null;
 
-  firebase.auth().signInWithCredential(credential).then(function(user) {
+  // Return a promise
+  return firebase.auth().signInWithCredential(credential).then(function(user) {
     // This gives you a Facebook Access Token. You can use it to access the Facebook API.
-    // token = result.credential.accessToken;
-    // The signed-in user info.
-    // user = result.user;
 
-    updateUser(user.uid, facebookUid, user.displayName);
+    // Update user and return a promise
+    return updateUser(user.uid, facebookUid, user.displayName);
     // ...
   }).catch(function(error) {
     // Handle Errors here.
@@ -62,7 +61,7 @@ export function createUserWithToken(token, facebookUid){
     var email = error.email;
     // The firebase.auth.AuthCredential type that was used.
     var credential = error.credential;
-     // ...
+     // TODO handle error? maybe should remove catch and leave handling caller
   });
 
 };
