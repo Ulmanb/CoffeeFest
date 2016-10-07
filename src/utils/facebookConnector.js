@@ -43,29 +43,40 @@ export function getFBAccessToken() {
   });
 }
 
-export function getUsingFBFriends(accessToken, errFirstCallback) {
-  return new Promise((resolve, reject) => {
-      const infoRequest = new GraphRequest(
-      // '/me/taggable_friends',
-      '/me/friends',
-      {
-        accessToken,
-        parameters: {
-          // limit: '100',
-          fields: {
-            string: 'id,name,picture'
-          }
-        }
-      },
-      (err, results) => {
-        if(err)
-          return reject(err);
-        return resolve(results);
-      }
-      // responseInfoCallback
-    );
+export function getUsingFBFriends() {
+  return getFBFriends('/me/friends');
+}
 
-    // Start the graph request.
-    new GraphRequestManager().addRequest(infoRequest).start();
+export function getTaggableFBFriends() {
+  return getFBFriends('/me/taggable_friends');
+}
+
+function getFBFriends(route) {
+  return getFBAccessToken()
+  .then((data) => {
+    const { accessToken } = data;
+    return new Promise((resolve, reject) => {
+      const infoRequest = new GraphRequest(
+        route,
+        {
+          accessToken,
+          parameters: {
+            // limit: '100',
+            fields: {
+              string: 'id,name,picture'
+            }
+          }
+        },
+        (err, results) => {
+          if(err)
+            return reject(err);
+          return resolve(results);
+        }
+      // responseInfoCallback
+      );
+
+      // Start the graph request.
+      new GraphRequestManager().addRequest(infoRequest).start();
+    });
   });
 }

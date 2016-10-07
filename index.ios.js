@@ -12,12 +12,17 @@ import {
   Text,
   View
 } from 'react-native';
+import { Provider } from 'mobx-react/native';
+import store from './src/mobx/userStore';
+
 import TabBar from './src/Components/tab_bar';
 
 class Main extends Component {
   render() {
     return (
-      <TabBar />
+      <Provider store={store}>
+        <TabBar />
+      </Provider>
     );
   }
 }

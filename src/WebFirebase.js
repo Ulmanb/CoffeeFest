@@ -1,6 +1,7 @@
 
 import * as firebase from 'firebase';
 import config from '../config';
+import UserStore from './mobx/userStore';
 
 firebase.initializeApp(config);
 
@@ -9,6 +10,7 @@ let _currUser = null;
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     _currUser = new User(user);
+    UserStore.setUserDataFromFirebase(user);
   } else {
     _currUser = null;
   }
@@ -50,22 +52,11 @@ export function updateUser(firebaseUid, facebookUid, displayName, friends) {
 
 
 export function makeCoffee() {
-  // console.log('makeCoffee');
-  // var { currentUser } = firebase.auth();
-  // console.log(currentUser);
-  // if (!currentUser)
-  //   throw new Error("Not logged in when making coffee");
-  //
-  // var userId = currentUser.uid;
-  // var userFacebookData = currentUser.providerData.filter(provider => provider.providerId === 'facebook.com')[0];
-  //
-  // if (!userFacebookData) {
-  //   throw new Error("no facebook data in make coffee - weird stuff");
-  // }
-  // else {
-
-    // const facebookId = _currUser.FacebookUID;
     console.log(_currUser);
+
+    if(!_currUser)
+      return null;
+
     const { photoURL, FacebookUID, FirebaseUID, displayName } = _currUser;
 
     var coffeeData = {

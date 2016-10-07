@@ -8,17 +8,29 @@ import {
   ListView,
   Image
 } from 'react-native';
+import {
+  observer,
+  inject
+} from 'mobx-react/native';
 
-export default class Notifications extends Component {
+@inject("store") @observer
+class Notifications extends Component {
 
-  componentWillReceiveProps(nextProps, nextState) {
-    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-
-    this.setState({
-      friends: nextProps.friends,
-      dataSource: ds.cloneWithRows( nextProps.friends )
-    });
-  }
+  // componentWillReceiveProps(nextProps, nextState) {
+  //   const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+  //
+  //   console.log('willRecieveprops');
+  //   // this.setState({
+  //   //   friends: nextProps.friends,
+  //   //   dataSource: ds.cloneWithRows( nextProps.friends )
+  //   // });
+  //   debugger;
+  //
+  //   this.setState({
+  //     friends: nextProps.store.coffeeFriends,
+  //     dataSource: ds.cloneWithRows( nextProps.store.coffeeFriends )
+  //   });
+  // }
 
   constructor() {
     super();
@@ -31,9 +43,14 @@ export default class Notifications extends Component {
   }
 
   render() {
+    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    const lds = ds.cloneWithRows( this.props.store.coffeeFriends.slice() );
+    // debugger;
+    console.log('store', this.props.store);
     return (
       <ListView style={styles.listView}
-        dataSource={this.state.dataSource}
+      // dataSource={this.state.dataSource}
+        dataSource={lds}
         //  renderRow={(rowData) => <Text>{rowData}</Text>}
         renderRow={this.notificationLine}
         renderSeparator={this._renderSeparator}
@@ -111,3 +128,5 @@ const styles = StyleSheet.create({
 
   }
 });
+
+export default Notifications;
