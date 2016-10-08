@@ -11,14 +11,16 @@ import {
 } from '../utils/facebookConnector';
 import {
   updateUser,
-  getUserCoffeeFriends
+  getUserCoffeeFriends,
+  getCoffeesForUser,
+  makeCoffee as firebaseMakeCoffee
 } from '../WebFirebase';
 
 class User {
   @observable firebaseUser;
   @observable usingFriends = [];
   @observable coffeeFriends = [];
-  @observable coffeeMakers = [];
+  @observable coffeesInTheMaking = [];
   @observable allFriends = [];
   @observable userFacebookData;
 
@@ -43,7 +45,6 @@ class User {
   }
 
   @computed get DBCoffeeFriends() {
-    debugger;
     // Generate an array of facebookUIDs of the friends
     return this.usingFriends.map(curr => curr.id);
   }
@@ -71,14 +72,57 @@ class User {
         throw new Error('no facebook data in - weird stuff');
 
       this.fetchFriends();
+
+      // getCoffeesForUser(this.facebookUID, snapshot => {
+      getCoffeesForUser('10210689174805060', snapshot => {
+        debugger;
+        this.setCoffeesInTheMaking(snapshot.val());
+      });
+    }
+  }
+
+  setCoffeesInTheMaking(coffees) {
+    if (coffees) {
+      this.coffeesInTheMaking = coffees;
+    } else {
+      this.coffeesInTheMaking = [];
     }
   }
 
   @computed
-  coffeeMakers() {
-    if (this.coffeeFriends) {
+  get coffeeMakers() {
+    let retVal = [];
 
+    if (this.coffeesInTheMaking) {
+      retVal = Object.keys(this.coffeesInTheMaking).map((key) => {
+        // key: the name of the object key
+        // index: the ordinal position of the key within the object
+        const curr = this.coffeesInTheMaking[key];
+
+        if(curr.makerPhoto && curr.makerName && curr.timeStart)
+          return {
+            photoURL: curr.makerPhoto,
+            name: curr.makerName,
+            since: new Date(curr.timeStart)
+          };
+      })
+      // Sanity check
+      .filter((curr) => curr !== undefined);
     }
+
+    return retVal;
+  }
+
+  makeCoffee() {
+    const {
+      photoURL,
+      facebookUID,
+      firebaseUID,
+      displayName,
+      coffeeFriends
+    } = this;
+
+    firebaseMakeCoffee(photoURL, facebookUID, firebaseUID, displayName, coffeeFriends);
   }
 
   fetchFriends() {
@@ -86,7 +130,7 @@ class User {
       this.fetchUsingFriends(),
       this.fetchAllFriends(),
       this.fetchCoffeeFriends(),
-    ]).then((values) => {
+    ]).then(() => {
       const { firebaseUID, facebookUID, displayName, DBCoffeeFriends } = this;
 
       if (firebaseUID && facebookUID && displayName) {
@@ -103,39 +147,41 @@ class User {
   @autobind
   setCoffeeFriends(friends) {
     debugger;
-    if(friends) {
+    if(friends)
       this.coffeeFriends = friends;
-    } else {
-      this.coffeeFriends = [];
-    }
   }
 
   fetchCoffeeFriends() {
-    return getUserCoffeeFriends()
-    .then(this.setCoffeeFriends)
-    .catch(err => {
-      //Retry
-      this.fetchCoffeeFriends();
+    debugger;
+    return new Promise((resolve) => {
+      getUserCoffeeFriends()
+      .then(ret => {
+        this.setCoffeeFriends(ret);
+        resolve(true);
+      })
+      .catch(err => {
+        //Retry
+        debugger;
+        this.fetchCoffeeFriends();
+      });
     });
   }
 
   @autobind
   setUsingFriends(result) {
-    debugger;
     this.usingFriends = result.data;
   }
 
   fetchUsingFriends() {
     debugger;
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       getUsingFBFriends()
-      .then(result => {
-        this.setUsingFriends(result);
+      .then(ret => {
+        this.setUsingFriends(ret);
         resolve(true);
       })
       .catch(err => {
         // Retry
-        debugger;
         this.fetchUsingFriends();
       });
     });
@@ -144,13 +190,12 @@ class User {
   fetchAllFriends() {
     const self = this;
 
-    return getTaggableFBFriends()
+    getTaggableFBFriends()
     .then(result => {
             this.allFriends = result.data;
       console.log(this.allFriends);
       console.log(self.allFriends);
     }).catch(err => {
-      debugger;
       // Retry
       this.fetchAllFriends();
     });
@@ -177,5 +222,8 @@ class User {
 //   }
 // });
 
+// autorun(() => {
+//   getCoffeesForUser()
+// });
 export default new User();
 // export default user;

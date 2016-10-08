@@ -44,9 +44,9 @@ class Notifications extends Component {
 
   render() {
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-    const lds = ds.cloneWithRows( this.props.store.coffeeFriends.slice() );
+    const lds = ds.cloneWithRows( this.props.store.coffeeMakers.slice() );
     // debugger;
-    console.log('store', this.props.store);
+    console.log('store', this.props.store, lds);
     return (
       <ListView style={styles.listView}
       // dataSource={this.state.dataSource}
@@ -62,13 +62,13 @@ class Notifications extends Component {
   notificationLine(rowData){
     return (
       <View style={styles.row}>
-        <Image style = {styles.thumb} source={{uri : rowData.picture.data.url}} />
+        <Image style = {styles.thumb} source={{uri : rowData.photoURL}} />
         <View style={styles.textContainer}>
           <Text style={styles.nameText}>
-            {`${rowData.name} `}
+            {`${rowData.name} `}is making ☕️!
           </Text>
           <Text style = {styles.text}>
-            is making ☕️!
+            Since: {rowData.since.toLocaleString()}
           </Text>
         </View>
       </View>
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
   textContainer: {
     marginLeft: 10,
     flex: 1,
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'space-around'
   },

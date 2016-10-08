@@ -7,13 +7,17 @@ import {
   TouchableOpacity,
   Image
 } from 'react-native';
-
-import { LoginManager } from 'react-native-fbsdk';
-import Login from './unused/facebookLogin';
-import { makeCoffee } from '../WebFirebase';
-
+// import { LoginManager } from 'react-native-fbsdk';
+import {
+  observer,
+  inject
+} from 'mobx-react/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
+import Login from './unused/facebookLogin';
+// import { makeCoffee } from '../WebFirebase';
+
+@inject('store') @observer
 class MainScreen extends Component {
   constructor(props) {
     super(props);
@@ -58,7 +62,7 @@ class MainScreen extends Component {
 
   onCoffeeClick() {
     console.log("coffecClicked");
-    makeCoffee();
+    this.props.store.makeCoffee();
   }
 }
 

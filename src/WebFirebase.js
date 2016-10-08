@@ -6,6 +6,7 @@ import UserStore from './mobx/userStore';
 firebase.initializeApp(config);
 
 firebase.auth().onAuthStateChanged(function(user) {
+  console.log('AuthStateChanged');
   UserStore.setUserDataFromFirebase(user);
 });
 
@@ -55,17 +56,14 @@ export function updateUser(firebaseUID, facebookUID, displayName, friends) {
     var updates = {};
     updates['/users/' + facebookUID] = postData;
     return firebase.database().ref().update(updates);
-};
+}
 
-
-export function makeCoffee() {
+export function makeCoffee(photoURL, facebookUID, firebaseUID, displayName, coffeeFriends) {
   console.log('makeCoffee', UserStore);
 
   if(!UserStore)
     return null;
-
-  const { photoURL, facebookUID, firebaseUID, displayName } = UserStore;
-
+    
   var coffeeData = {
     makerFacebook: facebookUID,
     makerFirebase: firebaseUID,
@@ -76,23 +74,33 @@ export function makeCoffee() {
   };
 
   // var newCoffeeKey = firebase.database().ref().child('coffees').push().key;
-  // var updates = {};
+  var updates = {};
 
   // Since you can only make one coffee at a time
-  // updates['/coffees/' + userId] = coffeeData;
+  updates[`/coffees/${facebookUID}`] = coffeeData;
 
-  var p = firebase.database().ref('coffees/' + facebookUID).set(coffeeData);
+  coffeeFriends.forEach(curr => {
+    updates[`/users/${curr}/friendsCoffees/${facebookUID}`] = coffeeData;
+  });
+
+  console.log(updates);
+  var p = firebase.database().ref().update(updates);
   console.log(p);
-  setTimeout(getCoffees, 1000);
+  // setTimeout(getCoffees, 1000);
   return p;
 }
 
-export function getCoffees() {
-  var coffees = firebase.database().ref('coffees/');
+export function getCoffeesForUser(userFacebookUID, coffeesChangeCB) {
+  // var coffees = firebase.database().ref('coffees/');
+  //
+  // coffees.on('value', function(snapshot) {
+  //   console.log(snapshot.val());
+  // });
 
-  coffees.on('value', function(snapshot) {
-    console.log(snapshot.val());
-  });
+  // var coffees2 = firebase.database().ref('users/10210689174805060/friendsCoffees');
+  var coffees2 = firebase.database().ref(`users/${userFacebookUID}/friendsCoffees`);
+
+  coffees2.on('value', coffeesChangeCB);
 }
 
 export function createUserWithToken(token, facebookUid){
@@ -105,7 +113,7 @@ export function createUserWithToken(token, facebookUid){
   return firebase.auth().signInWithCredential(credential).then(function(user) {
     // This gives you a Facebook Access Token. You can use it to access the Facebook API.
 
-    UserStore.setUserDataFromFirebase(user);
+    // UserStore.setUserDataFromFirebase(user);
 
     // Update user and return a promise
     // return updateUser();
