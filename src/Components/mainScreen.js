@@ -19,13 +19,13 @@ import Login from './unused/facebookLogin';
 
 @inject('store') @observer
 class MainScreen extends Component {
+  static contextTypes = { drawer: React.PropTypes.object };
+
   constructor(props) {
     super(props);
     this.onCoffeeClick = this.onCoffeeClick.bind(this);
     this.openDrawer = this.openDrawer.bind(this);
   }
-
-  static contextTypes = { drawer: React.PropTypes.object };
 
   render() {
     return (

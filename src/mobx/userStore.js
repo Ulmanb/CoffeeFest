@@ -14,7 +14,8 @@ import {
   getUserCoffeeFriends,
   getCoffeesForUser,
   makeCoffee as firebaseMakeCoffee,
-  getUserIsMaking
+  getUserIsMaking,
+  doesUserExist
 } from '../WebFirebase';
 
 class User {
@@ -61,7 +62,7 @@ class User {
         // key: the name of the object key
         const curr = this.coffeesInTheMaking[key];
 
-        if(curr.makerPhoto && curr.makerName && curr.timeStart)
+        if (curr.makerPhoto && curr.makerName && curr.timeStart)
           return {
             photoURL: curr.makerPhoto,
             name: curr.makerName,
@@ -101,7 +102,6 @@ class User {
 
       // getCoffeesForUser(this.facebookUID, snapshot => {
       getCoffeesForUser('10210689174805060', snapshot => {
-        // debugger;
         this.setCoffeesInTheMaking(snapshot.val());
       });
 
@@ -140,9 +140,9 @@ class User {
 
   fetchIsMaking() {
     getUserIsMaking(this.facebookUID, (snapshot) => {
-      debugger;
       console.log('is making', snapshot.val());
-      this.isMaking = snapshot.val();
+      // Convert to bool
+      this.isMaking = !!snapshot.val();
     });
   }
 
@@ -151,10 +151,12 @@ class User {
       this.fetchUsingFriends(),
       this.fetchAllFriends(),
       this.fetchCoffeeFriends(),
-    ]).then(() => {
+      doesUserExist(this.facebookUID)
+    ]).then((values) => {
       const { firebaseUID, facebookUID, displayName, DBCoffeeFriends } = this;
 
-      if (firebaseUID && facebookUID && displayName) {
+      // !values[3] => If user does not yet exist
+      if (!values[3] && firebaseUID && facebookUID && displayName) {
         updateUser(
           firebaseUID,
           facebookUID,
@@ -168,7 +170,7 @@ class User {
   @autobind
   setCoffeeFriends(friends) {
     // debugger;
-    if(friends)
+    if (friends)
       this.coffeeFriends = friends;
   }
 
@@ -221,30 +223,6 @@ class User {
       this.fetchAllFriends();
     });
   }
-
-  // @computed get facebookUID(){
-  //   return this.firebaseUser && this.firebaseUser.displayName;
-  // }
-
 }
-// const user = new User();
-//
-// // Update user to Firebase DB
-// autorun(() => {
-//   const { firebaseUID, facebookUID, displayName, DBCoffeeFriends } = user;
-//
-//   if (firebaseUID && facebookUID && displayName) {
-//     updateUser(
-//       firebaseUID,
-//       facebookUID,
-//       displayName,
-//       DBCoffeeFriends
-//     );
-//   }
-// });
 
-// autorun(() => {
-//   getCoffeesForUser()
-// });
 export default new User();
-// export default user;
