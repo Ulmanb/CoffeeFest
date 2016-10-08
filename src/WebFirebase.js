@@ -22,39 +22,46 @@ export function getUserCoffeeFriends() {
 }
 
 // Select all the users and their properties
-export function getAllUsers() {
-  var data_container = null;
-  var users = firebase.database().ref('users/');
-  users.on('value', function(data) {
-    data_container = data.val();
-  });
-  return data_container;
-};
+// export function getAllUsers() {
+//   var data_container = null;
+//   var users = firebase.database().ref('users/');
+//   users.on('value', function(data) {
+//     data_container = data.val();
+//   });
+//   return data_container;
+// };
 
 // Select user by user_id
-export function getUserById(userId){
+export function getUserDataById(userId, cb){
   var data_container = null;
   var user = firebase.database().ref('users/'+userId);
-  user.on('value', function(data){
-    data_container = data.val();
-  });
-  return data_container;
-};
+  user.on('value', cb);
+}
+
+// Select user by user_id
+export function getUserIsMaking(userId, cb) {
+  firebase.database().ref(`users/${userId}`)
+  .on('value', (s) => console.log('isMakingUser:', s.val()));
+
+  firebase.database().ref(`users/${userId}/isMaking`)
+  .on('value', cb);
+}
 
 //Add new user to db
 export function updateUser(firebaseUID, facebookUID, displayName, friends) {
-    var postData = {
+    const postData = {
       firebaseUID,
       facebookUID,
       displayName,
       // photo: photoURL || '',
-      friends: friends || []
+      friends: friends || [],
+      // isMaking
     };
 
     console.log('updateUser', postData);
 
-    var updates = {};
-    updates['/users/' + facebookUID] = postData;
+    const updates = {};
+    updates[`/users/${facebookUID}`] = postData;
     return firebase.database().ref().update(updates);
 }
 
@@ -63,7 +70,7 @@ export function makeCoffee(photoURL, facebookUID, firebaseUID, displayName, coff
 
   if(!UserStore)
     return null;
-    
+
   var coffeeData = {
     makerFacebook: facebookUID,
     makerFirebase: firebaseUID,
@@ -79,9 +86,13 @@ export function makeCoffee(photoURL, facebookUID, firebaseUID, displayName, coff
   // Since you can only make one coffee at a time
   updates[`/coffees/${facebookUID}`] = coffeeData;
 
+  // Update friends notifications
   coffeeFriends.forEach(curr => {
     updates[`/users/${curr}/friendsCoffees/${facebookUID}`] = coffeeData;
   });
+
+  // Update current user to be making
+  updates[`/users/${facebookUID}/isMaking`] = true;
 
   console.log(updates);
   var p = firebase.database().ref().update(updates);
@@ -98,8 +109,7 @@ export function getCoffeesForUser(userFacebookUID, coffeesChangeCB) {
   // });
 
   // var coffees2 = firebase.database().ref('users/10210689174805060/friendsCoffees');
-  var coffees2 = firebase.database().ref(`users/${userFacebookUID}/friendsCoffees`);
-
+  const coffees2 = firebase.database().ref(`users/${userFacebookUID}/friendsCoffees`);
   coffees2.on('value', coffeesChangeCB);
 }
 

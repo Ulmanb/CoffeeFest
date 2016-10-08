@@ -13,7 +13,8 @@ import {
   updateUser,
   getUserCoffeeFriends,
   getCoffeesForUser,
-  makeCoffee as firebaseMakeCoffee
+  makeCoffee as firebaseMakeCoffee,
+  getUserIsMaking
 } from '../WebFirebase';
 
 class User {
@@ -23,6 +24,7 @@ class User {
   @observable coffeesInTheMaking = [];
   @observable allFriends = [];
   @observable userFacebookData;
+  @observable isMaking = null;
 
   @computed get displayName() {
     return this.firebaseUser && this.firebaseUser.displayName;
@@ -40,53 +42,13 @@ class User {
     return this.userFacebookData && this.userFacebookData.photoURL;
   }
 
-  @computed get JSCoffeeFriends() {
-    return this.coffeeFriends.slice();
-  }
+  // @computed get JSCoffeeFriends() {
+  //   return this.coffeeFriends.slice();
+  // }
 
   @computed get DBCoffeeFriends() {
     // Generate an array of facebookUIDs of the friends
     return this.usingFriends.map(curr => curr.id);
-  }
-
-  clearAll() {
-    this.facebookUID = this.photoURL = this.firebaseUser =
-    this.usingFriends = this.coffeeFriends = this.coffeeMakers =
-    this.allFriends = this.userFacebookData = null;
-  }
-
-  setUserDataFromFirebase(firebaseUser) {
-    this.firebaseUser = firebaseUser;
-
-    console.log('ofer hegati');
-
-    debugger;
-    // Got null or weird whatever so clear user data
-    if (!firebaseUser) {
-      this.clearAll();
-    } else {
-      this.userFacebookData =
-        firebaseUser.providerData.filter(provider => provider.providerId === 'facebook.com')[0];
-
-      if (!this.userFacebookData)
-        throw new Error('no facebook data in - weird stuff');
-
-      this.fetchFriends();
-
-      // getCoffeesForUser(this.facebookUID, snapshot => {
-      getCoffeesForUser('10210689174805060', snapshot => {
-        debugger;
-        this.setCoffeesInTheMaking(snapshot.val());
-      });
-    }
-  }
-
-  setCoffeesInTheMaking(coffees) {
-    if (coffees) {
-      this.coffeesInTheMaking = coffees;
-    } else {
-      this.coffeesInTheMaking = [];
-    }
   }
 
   @computed
@@ -94,9 +56,9 @@ class User {
     let retVal = [];
 
     if (this.coffeesInTheMaking) {
+      // "Serialize" coffee data to an array
       retVal = Object.keys(this.coffeesInTheMaking).map((key) => {
         // key: the name of the object key
-        // index: the ordinal position of the key within the object
         const curr = this.coffeesInTheMaking[key];
 
         if(curr.makerPhoto && curr.makerName && curr.timeStart)
@@ -113,6 +75,52 @@ class User {
     return retVal;
   }
 
+  clearAll() {
+    this.facebookUID = this.photoURL = this.firebaseUser =
+    this.usingFriends = this.coffeeFriends = this.coffeeMakers =
+    this.allFriends = this.userFacebookData = null;
+  }
+
+  setUserDataFromFirebase(firebaseUser) {
+    this.firebaseUser = firebaseUser;
+
+    console.log('ofer hegati');
+
+    // debugger;
+    // Got null or weird whatever so clear user data
+    if (!firebaseUser) {
+      this.clearAll();
+    } else {
+      this.userFacebookData =
+        firebaseUser.providerData.filter(provider => provider.providerId === 'facebook.com')[0];
+
+      if (!this.userFacebookData)
+        throw new Error('no facebook data in - weird stuff');
+
+      this.fetchFriends();
+
+      // getCoffeesForUser(this.facebookUID, snapshot => {
+      getCoffeesForUser('10210689174805060', snapshot => {
+        // debugger;
+        this.setCoffeesInTheMaking(snapshot.val());
+      });
+
+      this.fetchIsMaking();
+    }
+  }
+
+  setCoffeesInTheMaking(coffees) {
+    if (coffees) {
+      this.coffeesInTheMaking = coffees;
+    } else {
+      this.coffeesInTheMaking = [];
+    }
+  }
+
+  setIsMaking(isMaking) {
+    this.isMaking = isMaking;
+  }
+
   makeCoffee() {
     const {
       photoURL,
@@ -122,7 +130,20 @@ class User {
       coffeeFriends
     } = this;
 
-    firebaseMakeCoffee(photoURL, facebookUID, firebaseUID, displayName, coffeeFriends);
+    firebaseMakeCoffee(photoURL, facebookUID, firebaseUID, displayName, coffeeFriends)
+    .catch(err => {
+      this.fetchIsMaking();
+    });
+
+    this.isMaking = true;
+  }
+
+  fetchIsMaking() {
+    getUserIsMaking(this.facebookUID, (snapshot) => {
+      debugger;
+      console.log('is making', snapshot.val());
+      this.isMaking = snapshot.val();
+    });
   }
 
   fetchFriends() {
@@ -146,13 +167,13 @@ class User {
 
   @autobind
   setCoffeeFriends(friends) {
-    debugger;
+    // debugger;
     if(friends)
       this.coffeeFriends = friends;
   }
 
   fetchCoffeeFriends() {
-    debugger;
+    // debugger;
     return new Promise((resolve) => {
       getUserCoffeeFriends()
       .then(ret => {
@@ -173,7 +194,7 @@ class User {
   }
 
   fetchUsingFriends() {
-    debugger;
+    // debugger;
     return new Promise(resolve => {
       getUsingFBFriends()
       .then(ret => {

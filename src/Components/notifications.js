@@ -13,61 +13,22 @@ import {
   inject
 } from 'mobx-react/native';
 
-@inject("store") @observer
+@inject('store') @observer
 class Notifications extends Component {
-
-  // componentWillReceiveProps(nextProps, nextState) {
-  //   const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-  //
-  //   console.log('willRecieveprops');
-  //   // this.setState({
-  //   //   friends: nextProps.friends,
-  //   //   dataSource: ds.cloneWithRows( nextProps.friends )
-  //   // });
-  //   debugger;
-  //
-  //   this.setState({
-  //     friends: nextProps.store.coffeeFriends,
-  //     dataSource: ds.cloneWithRows( nextProps.store.coffeeFriends )
-  //   });
-  // }
-
   constructor() {
     super();
     this.notificationLine = this.notificationLine.bind(this);
-    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-    this.state = {
-      friends: [],
-      dataSource: ds.cloneWithRows( [] ),
-    };
   }
 
-  render() {
-    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-    const lds = ds.cloneWithRows( this.props.store.coffeeMakers.slice() );
-    // debugger;
-    console.log('store', this.props.store, lds);
-    return (
-      <ListView style={styles.listView}
-      // dataSource={this.state.dataSource}
-        dataSource={lds}
-        //  renderRow={(rowData) => <Text>{rowData}</Text>}
-        renderRow={this.notificationLine}
-        renderSeparator={this._renderSeparator}
-        enableEmptySections={true}
-      />
-    );
-  }
-
-  notificationLine(rowData){
+  notificationLine(rowData) {
     return (
       <View style={styles.row}>
-        <Image style = {styles.thumb} source={{uri : rowData.photoURL}} />
+        <Image style={styles.thumb} source={{ uri: rowData.photoURL }} />
         <View style={styles.textContainer}>
           <Text style={styles.nameText}>
             {`${rowData.name} `}is making ☕️!
           </Text>
-          <Text style = {styles.text}>
+          <Text style={styles.text}>
             Since: {rowData.since.toLocaleString()}
           </Text>
         </View>
@@ -83,6 +44,24 @@ class Notifications extends Component {
           height: adjacentRowHighlighted ? 4 : 1,
           backgroundColor: adjacentRowHighlighted ? '#3B5998' : '#CCCCCC',
         }}
+      />
+    );
+  }
+
+  render() {
+    const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+    const lds = ds.cloneWithRows(this.props.store.coffeeMakers.slice());
+    // debugger;
+    console.log('store', this.props.store, lds);
+    return (
+      <ListView
+        style={styles.listView}
+      // dataSource={this.state.dataSource}
+        dataSource={lds}
+        //  renderRow={(rowData) => <Text>{rowData}</Text>}
+        renderRow={this.notificationLine}
+        renderSeparator={this._renderSeparator}
+        enableEmptySections
       />
     );
   }
