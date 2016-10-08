@@ -5,19 +5,23 @@ import UserStore from './mobx/userStore';
 
 firebase.initializeApp(config);
 
-let _currUser = null;
-
 firebase.auth().onAuthStateChanged(function(user) {
-  if (user) {
-    _currUser = new User(user);
-    UserStore.setUserDataFromFirebase(user);
-  } else {
-    _currUser = null;
-  }
+  UserStore.setUserDataFromFirebase(user);
 });
 
+export function getUserCoffeeFriends() {
+  console.log('getUserCoffeeFriends');
+  return new Promise((resolve) => {
+    firebase.database().ref(`users/${UserStore.facebookUID}/friends`)
+    // firebase.database().ref(`users/${UserStore.facebookUID}`)
+    .on('value', data => {
+      resolve(data.val());
+    });
+  });
+}
+
 // Select all the users and their properties
-export function getAllUsers(){
+export function getAllUsers() {
   var data_container = null;
   var users = firebase.database().ref('users/');
   users.on('value', function(data) {
@@ -37,51 +41,50 @@ export function getUserById(userId){
 };
 
 //Add new user to db
-export function updateUser(firebaseUid, facebookUid, displayName, friends) {
+export function updateUser(firebaseUID, facebookUID, displayName, friends) {
     var postData = {
-      firebaseUid,
-      facebookUid,
+      firebaseUID,
+      facebookUID,
       displayName,
       // photo: photoURL || '',
       friends: friends || []
     };
+
+    console.log('updateUser', postData);
+
     var updates = {};
-    updates['/users/' + facebookUid] = postData;
+    updates['/users/' + facebookUID] = postData;
     return firebase.database().ref().update(updates);
 };
 
 
 export function makeCoffee() {
-    console.log(_currUser);
+  console.log('makeCoffee', UserStore);
 
-    if(!_currUser)
-      return null;
+  if(!UserStore)
+    return null;
 
-    const { photoURL, FacebookUID, FirebaseUID, displayName } = _currUser;
+  const { photoURL, facebookUID, firebaseUID, displayName } = UserStore;
 
-    var coffeeData = {
-      makerFacebook: FacebookUID,
-      makerFirebase: FirebaseUID,
-      makerName: displayName,
-      makerPhoto: photoURL,
-      timeStart: new Date(),
-      requests: [],
-    };
+  var coffeeData = {
+    makerFacebook: facebookUID,
+    makerFirebase: firebaseUID,
+    makerName: displayName,
+    makerPhoto: photoURL,
+    timeStart: new Date(),
+    requests: [],
+  };
 
-    // var newCoffeeKey = firebase.database().ref().child('coffees').push().key;
-    // var updates = {};
+  // var newCoffeeKey = firebase.database().ref().child('coffees').push().key;
+  // var updates = {};
 
-    // Since you can only make one coffee at a time
-    // updates['/coffees/' + userId] = coffeeData;
+  // Since you can only make one coffee at a time
+  // updates['/coffees/' + userId] = coffeeData;
 
-    var p = firebase.database().ref('coffees/' + FacebookUID).set(coffeeData);
-    console.log(p);
-    setTimeout(getCoffees, 1000);
-    return p;
-}
-
-function getCurrentUser(){
-
+  var p = firebase.database().ref('coffees/' + facebookUID).set(coffeeData);
+  console.log(p);
+  setTimeout(getCoffees, 1000);
+  return p;
 }
 
 export function getCoffees() {
@@ -102,10 +105,13 @@ export function createUserWithToken(token, facebookUid){
   return firebase.auth().signInWithCredential(credential).then(function(user) {
     // This gives you a Facebook Access Token. You can use it to access the Facebook API.
 
+    UserStore.setUserDataFromFirebase(user);
+
     // Update user and return a promise
-    return updateUser(user.uid, facebookUid, user.displayName);
+    // return updateUser();
     // ...
-  }).catch(function(error) {
+  })
+  .catch(function(error) {
     // Handle Errors here.
     var errorCode = error.code;
     var errorMessage = error.message;
@@ -115,29 +121,4 @@ export function createUserWithToken(token, facebookUid){
     var credential = error.credential;
      // TODO handle error? maybe should remove catch and leave handling caller
   });
-
-};
-
-class User {
-  constructor(FirebaseUser) {
-    this.FirebaseUID = FirebaseUser.uid;
-
-    if (!FirebaseUser)
-      throw new Error("Not logged in");
-
-    var userId = FirebaseUser.uid;
-    var userFacebookData = FirebaseUser.providerData.filter(provider => provider.providerId === 'facebook.com')[0];
-
-    if (!userFacebookData) {
-      throw new Error("no facebook data in - weird stuff");
-    }
-    else {
-      this.FacebookUID = userFacebookData.uid;
-      this.photoURL = userFacebookData.photoURL;
-      this.displayName = FirebaseUser.displayName;
-    }
-  }
 }
-// class DBManager {
-//   constructor(user.uid)
-// }
