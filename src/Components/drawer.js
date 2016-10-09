@@ -1,10 +1,10 @@
 /* @flow */
 
 import React, { Component } from 'react';
-
-import MainScreen from './mainScreen';
-import PendingCooffees from './notifications';
 import Drawer from 'react-native-drawer';
+
+import MainScreen from './mainScreenRouterWrapper';
+import PendingCooffees from './notifications';
 
 export default class DrawerComp extends Component {
   render () {

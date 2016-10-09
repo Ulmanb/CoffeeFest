@@ -15,7 +15,8 @@ import {
   getCoffeesForUser,
   makeCoffee as firebaseMakeCoffee,
   getUserIsMaking,
-  doesUserExist
+  doesUserExist,
+  addCoffeeRequest as firebaseAddCoffeeRequest
 } from '../WebFirebase';
 
 class User {
@@ -26,6 +27,7 @@ class User {
   @observable allFriends = [];
   @observable userFacebookData;
   @observable isMaking = null;
+  @observable coffeeRequests = [];
 
   @computed get displayName() {
     return this.firebaseUser && this.firebaseUser.displayName;
@@ -58,7 +60,7 @@ class User {
 
     if (this.coffeesInTheMaking) {
       // "Serialize" coffee data to an array
-      retVal = Object.keys(this.coffeesInTheMaking).map((key) => {
+      retVal = Object.keys(this.coffeesInTheMaking).map(key => {
         // key: the name of the object key
         const curr = this.coffeesInTheMaking[key];
 
@@ -66,7 +68,8 @@ class User {
           return {
             photoURL: curr.makerPhoto,
             name: curr.makerName,
-            since: new Date(curr.timeStart)
+            since: new Date(curr.timeStart),
+            makerId: curr.makerFacebook
           };
       })
       // Sanity check
@@ -79,7 +82,7 @@ class User {
   clearAll() {
     this.facebookUID = this.photoURL = this.firebaseUser =
     this.usingFriends = this.coffeeFriends = this.coffeeMakers =
-    this.allFriends = this.userFacebookData = null;
+    this.allFriends = this.userFacebookData = this.coffeeRequests = null;
   }
 
   setUserDataFromFirebase(firebaseUser) {
@@ -109,6 +112,20 @@ class User {
     }
   }
 
+  getCoffeeRequests() {
+    
+  }
+
+  addCoffeeRequest(makerUID) {
+    firebaseAddCoffeeRequest(makerUID, this.facebookUID)
+    .catch((err) => {
+      //TODO error handling
+      // Retry
+      this.addCoffeeRequest(makerUID);
+      console.log('addCoffeeReqError', err);
+    });
+  }
+
   setCoffeesInTheMaking(coffees) {
     if (coffees) {
       this.coffeesInTheMaking = coffees;
@@ -132,6 +149,7 @@ class User {
 
     firebaseMakeCoffee(photoURL, facebookUID, firebaseUID, displayName, coffeeFriends)
     .catch(err => {
+      console.log('error', err);
       this.fetchIsMaking();
     });
 
@@ -184,7 +202,7 @@ class User {
       })
       .catch(err => {
         //Retry
-        debugger;
+        console.log('error', err);
         this.fetchCoffeeFriends();
       });
     });
@@ -205,6 +223,7 @@ class User {
       })
       .catch(err => {
         // Retry
+        console.log('error', err);
         this.fetchUsingFriends();
       });
     });
@@ -220,6 +239,7 @@ class User {
       console.log(self.allFriends);
     }).catch(err => {
       // Retry
+      console.log('error', err);
       this.fetchAllFriends();
     });
   }

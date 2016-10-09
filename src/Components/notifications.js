@@ -6,23 +6,37 @@ import {
   Text,
   StyleSheet,
   ListView,
-  Image
+  Image,
+  TouchableOpacity
 } from 'react-native';
 import {
   observer,
   inject
 } from 'mobx-react/native';
+import { Actions } from 'react-native-mobx';
 
 @inject('store') @observer
 class Notifications extends Component {
+  static contextTypes = { drawer: React.PropTypes.object };
+
   constructor() {
     super();
     this.notificationLine = this.notificationLine.bind(this);
   }
 
+  onLineClick(rowData) {
+    this.context.drawer.close();
+    Actions.drinkChoice({ coffeeMakerId: rowData.makerId });
+  }
+
   notificationLine(rowData) {
     return (
-      <View style={styles.row}>
+      <TouchableOpacity
+        onPress={() => {
+          this.onLineClick(rowData);
+        }}
+        style={styles.row}
+      >
         <Image style={styles.thumb} source={{ uri: rowData.photoURL }} />
         <View style={styles.textContainer}>
           <Text style={styles.nameText}>
@@ -32,7 +46,7 @@ class Notifications extends Component {
             Since: {rowData.since.toLocaleString()}
           </Text>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   }
 

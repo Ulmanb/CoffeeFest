@@ -9,7 +9,7 @@ import {
 import MainScreen from './drawer';
 import Leaderboard from './leaderboard';
 import CoffeeRequests from './coffeeRequests';
-import {createUserWithToken} from '../WebFirebase';
+import { createUserWithToken } from '../WebFirebase';
 import {
   getFBAccessToken,
   getUsingFBFriends

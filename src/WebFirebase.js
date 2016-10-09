@@ -10,6 +10,24 @@ firebase.auth().onAuthStateChanged(user => {
   UserStore.setUserDataFromFirebase(user);
 });
 
+export function getCoffeeRequest(makerUID) {
+  // const updates = {};
+  // updates[`/coffees/${makerUID}/requests/${requesterUID}`] = false;
+
+  firebase.database().ref(`/coffees/${makerUID}/requests`)
+  // firebase.database().ref(`users/${UserStore.facebookUID}`)
+  .on('value', data => {
+    resolve(data.val());
+  });
+}
+
+export function addCoffeeRequest(makerUID, requesterUID) {
+  const updates = {};
+  updates[`/coffees/${makerUID}/requests/${requesterUID}`] = false;
+
+  return firebase.database().ref().update(updates);
+}
+
 export function getUserCoffeeFriends() {
   console.log('getUserCoffeeFriends');
   return new Promise((resolve) => {

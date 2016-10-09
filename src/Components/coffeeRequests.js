@@ -1,8 +1,5 @@
 /* @flow */
 
-import React, { Component } from 'react';
-import { Header } from './commons';
-
 import {
   View,
   Text,
@@ -10,6 +7,8 @@ import {
   ListView,
   Image
 } from 'react-native';
+import React, { Component } from 'react';
+import { Header } from './commons';
 // import ItemCheckbox from 'react-native-item-checkbox';
 
 export default class MyComponent extends Component {

@@ -8,20 +8,26 @@ import React, { Component } from 'react';
 import {
   AppRegistry,
   StyleSheet,
-  TabBarIOS,
-  Text,
   View
 } from 'react-native';
+import { Scene, Router, Actions } from 'react-native-mobx';
 import { Provider } from 'mobx-react/native';
-import store from './src/mobx/userStore';
 
+import store from './src/mobx/userStore';
 import TabBar from './src/Components/tab_bar';
+import DrinkChoice from './src/Components/drinkOfChoice';
 
 class Main extends Component {
   render() {
     return (
       <Provider store={store}>
-        <TabBar />
+        {/* <Router>
+           <Scene key="root">
+            <Scene key="tabBar" component={TabBar} initial />
+             <Scene key="drinkChoice" component={DrinkChoice} title="ChooseDrink!" />
+           </Scene>
+         </Router> */}
+         <TabBar />
       </Provider>
     );
   }
@@ -48,3 +54,5 @@ const styles = StyleSheet.create({
 
 
 AppRegistry.registerComponent('CoffeeFest', () => Main);
+
+// setTimeout(() => Actions.drinkChoice(), 10000);

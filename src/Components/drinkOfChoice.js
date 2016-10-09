@@ -1,33 +1,41 @@
 /* @flow */
 
-import React, { Component } from 'react';
+import React from 'react';
 import {
   View,
-  Text,
+  TouchableOpacity,
   StyleSheet,
+  Image
 } from 'react-native';
 
-export default class Drink Choice extends Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <TouchableHighlight>
-          <Image source={require('../../images/coffeeNmilk.png')}/>
-        </TouchableHighlight>
-        <TouchableHighlight>
-          <Image source={require('../../images/coffeeNmilk.png')}/>
-        </TouchableHighlight>
-        <TouchableHighlight>
-          <Image source={require('../../images/coffeeNmilk.png')}/>
-        </TouchableHighlight>
-      </View>
-    );
-  }
+export default ({ coffeeMakerId }) => {
+  return (
+    <View style={styles.container}>
+      <TouchableOpacity style={{opacity:1}}>
+        <Image style={styles.imageStyle} source={require('../../images/coffeeNmilk.png')}/>
+      </TouchableOpacity>
+      <TouchableOpacity>
+        <Image style={styles.imageStyle} source={require('../../images/blackcoffee.png')}/>
+      </TouchableOpacity>
+      <TouchableOpacity>
+        <Image style={styles.imageStyle} source={require('../../images/TEA.png')}/>
+      </TouchableOpacity>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'rgb(168, 143, 93)'
+    backgroundColor: 'rgb(168, 143, 93)',
+    // opacity: 0.2,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
+  imageStyle: {
+    opacity: 1,
+    flex: 1,
+    width: 300,
+    height: 60
+  }
 });
